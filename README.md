@@ -6,6 +6,14 @@ This system ingests inbound leads in real time via secure webhooks, validates in
 
 ---
 
+## 📸 System Previews
+
+| Make.com Workflow Pipeline | Real-Time Slack Bot Notification |
+| :---: | :---: |
+| ![Workflow](workflow.png) | ![Slack Alert](slack-alert.png) |
+
+---
+
 ## 🎯 Business Value & Key Metrics
 
 * **Instant Speed-to-Lead (< 3s):** Replaces slow manual review with sub-3-second real-time scoring and instant alerts.
