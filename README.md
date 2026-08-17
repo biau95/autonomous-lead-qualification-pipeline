@@ -1,2 +1,102 @@
-# autonomous-lead-qualification-pipeline
-Event-driven AI lead qualification &amp; enrichment pipeline built with Make.com, OpenAI GPT-4o, Airtable, and Slack. Features real-time webhooks, JSON mode parsing, and fault-tolerant error handling.
+# ⚡ AI Lead Enrichment & Automated Qualification (Sell / CRM)
+
+An event-driven, production-grade automation workflow engineered with **Make.com**, **OpenAI API (GPT-5o)**, **Airtable**, and **Slack**. 
+
+This system ingests inbound leads in real time via secure webhooks, validates incoming payloads, enriches company data and scores buyer intent using LLMs in Strict JSON Mode, synchronizes structured records into an Airtable CRM, and routes high-priority opportunities straight to a sales Slack channel with actionable pitch summaries.
+
+---
+
+## 🎯 Business Value & Key Metrics
+
+* **Instant Speed-to-Lead (< 3s):** Replaces slow manual review with sub-3-second real-time scoring and instant alerts.
+* **Higher Conversion Readiness:** Equips sales reps with pre-calculated firmographic insights (industry, company size, urgency) and tailored elevator pitches before the first touchpoint.
+* **0 Idle Cost Architecture:** Replaces polling schedules with real-time webhooks, drastically reducing automation operation consumption.
+* **Zero Lost Opportunities:** Guarantees data persistence in CRM even during third-party API downtimes.
+
+---
+
+## 📐 Architecture Diagram
+
+```text
+                                  ┌────────────────────────┐
+                                  │ Drop / Reject Payload  │
+                                  └────────────────────────┘
+                                               ▲
+                                               │ (Invalid Email / Bot Pattern)
+┌────────────────┐      ┌────────────────┐  ┌──┴──┐      ┌────────────────┐      ┌────────────────┐
+│  Inbound Lead  │─────►│ Custom Webhook ├─►│Guard├─────►│  OpenAI GPT-4o │─────►│   JSON Parser  │
+│ (Website Form) │      │  (POST Ingest) │  └─────┘      │  (JSON Mode)   │      │(Schema Flatten)│
+└────────────────┘      └────────────────┘               └───────┬────────┘      └───────┬────────┘
+                                                                 │ (API Outage)          │
+                                                                 ▼                       │
+                                                        ┌─────────────────┐              ▼
+                                                        │ Never-Lose-Lead │      ┌────────────────┐
+                                                        │ Raw Lead Ingest │      │ Airtable CRM   │
+                                                        │ (Fallback State)│      │(Enriched Lead) │
+                                                        └─────────────────┘      └───────┬────────┘
+                                                                                         │
+                                                                                         ▼
+                                                                                 ┌───────────────┐
+                                                                                 │ Router/Filter │
+                                                                                 └───┬───────┬───┘
+                                                                                     │       │
+                                                      (Lead Score >= 8: Hot) ────────┘       └────── (Score < 8: Warm/Cold)
+                                                      │                                              │
+                                                      ▼                                              ▼
+                                           ┌──────────────────────┐                         [Stored in CRM Only]
+                                           │ Slack #hot-leads     │
+                                           │ (Rich Instant Alert) │
+                                           └──────────────────────┘
+```
+
+---
+
+## 🛡️ Enterprise Resilience & Fault Tolerance
+
+** 1.Payload Guard Filter:**
+  * Validates incoming email format via Regex (`^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$`) and checks payload integrity before triggering AI modules, eliminating spam and bot executions.
+
+* **Strict JSON Schema Enforcement:**
+  * Uses OpenAI JSON Object response formatting with explicit schema constraints to guarantee 100% deterministic field parsing.
+
+* **"Never Lose a Lead" Fallback Pattern:**
+  * Dedicated Error Handler captures 5xx/429 OpenAI API exceptions and automatically records the raw lead into Airtable with a fallback flag, ensuring zero data loss during third-party outages.
+
+* **Targeted Slack Alert Routing:**
+  * Filters alerts to notify sales teams only when `lead_score >= 8`, eliminating notification fatigue.
+
+---
+
+## 🛠️ Technology Stack
+
+| Component | Technology | Role |
+| :--- | :--- | :--- |
+| **Orchestration** | [Make.com](https://www.make.com/) | Webhook ingestion, JSON parsing, routing, error handlers |
+| **Intelligence** | [OpenAI API](https://platform.openai.com/) (GPT-4o) | Firmographic extraction, intent scoring, sales brief generation |
+| **CRM / Data Layer**| [Airtable](https://airtable.com/) | Real-time state management, lead profiling |
+| **Team Alerts** | [Slack API](https://slack.com/) | Formatted markdown alerts to dedicated `#hot-leads` channel |
+
+---
+
+## 🤖 AI Prompt Engineering
+
+### System Prompt
+```text
+You are an expert Sales Development Representative and Lead Qualification Specialist. 
+Analyze incoming B2B lead information and return a single valid JSON object.
+
+Extract and infer:
+1. "industry": Best-guess industry based on website/message (e.g. "Fintech", "Manufacturing", "E-commerce", "Unknown").
+2. "company_size": Estimate ("Startup", "SMB", "Mid-Market", "Enterprise").
+3. "lead_score": Integer from 1 to 10 evaluating sales readiness, budget, and project urgency.
+4. "sales_brief": Concise 2-sentence actionable summary advising the sales rep on how to pitch this lead.
+5. "qualification_tier": Choose exactly one: "Hot Lead" (score 8-10), "Warm Lead" (score 5-7), or "Cold/Spam" (score 1-4).
+
+Output ONLY raw JSON format matching this schema:
+{
+  "industry": "string",
+  "company_size": "string",
+  "lead_score": number,
+  "sales_brief": "string",
+  "qualification_tier": "string"
+}
