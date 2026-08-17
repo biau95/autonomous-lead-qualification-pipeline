@@ -53,7 +53,7 @@ This system ingests inbound leads in real time via secure webhooks, validates in
 
 ## 🛡️ Enterprise Resilience & Fault Tolerance
 
-* **1.Payload Guard Filter:**
+* **Payload Guard Filter:**
   * Validates incoming email format via Regex (`^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$`) and checks payload integrity before triggering AI modules, eliminating spam and bot executions.
 
 * **Strict JSON Schema Enforcement:**
@@ -100,3 +100,55 @@ Output ONLY raw JSON format matching this schema:
   "sales_brief": "string",
   "qualification_tier": "string"
 }
+```
+
+### User Prompt Input
+```text
+Name: {{1.name}}
+Email: {{1.email}}
+Website: {{1.website}}
+Message: {{1.message}}
+```
+
+---
+
+## 📋 Database Schema (Airtable)
+
+| Field Name | Type | Description |
+| :--- | :--- | :--- |
+| `Lead Name` | Single line text | Full name of the contact |
+| `Email` | Email | Contact email address |
+| `Company Website` | URL | Prospect domain name |
+| `Raw Message` | Long text | Raw inquiry from the website form |
+| `Company Industry` | Single line text | Industry predicted by AI |
+| `Company Size Estimate` | Single line text | Predicted company scale (`Startup`, `SMB`, `Enterprise`) |
+| `Lead Score` | Number (Integer) | Score from 1 to 10 |
+| `AI Sales Brief` | Long text | Actionable summary for sales outreach |
+| `Qualification Tier` | Single select | `Hot Lead`, `Warm Lead`, `Cold/Spam`, `Enrichment Failed` |
+
+---
+
+## 🚀 Setup & Installation
+
+* **Clone & Import:**
+  * Clone this repository.
+  * Import `blueprint.json` into your **Make.com** account.
+
+* **Airtable Configuration:**
+  * Create an Airtable base titled `Inbound Leads CRM` with the schema outlined above.
+  * Authenticate your Airtable connection inside Make.com.
+
+* **OpenAI & Slack Setup:**
+  * Add your `OPENAI_API_KEY` to the OpenAI module.
+  * Connect your Slack workspace and select the target alerts channel (e.g. `#hot-leads`).
+
+* **Form Integration:**
+  * Copy the webhook URL from the initial **Custom Webhook** module.
+  * Point your website form submission handler (Webflow, Typeform, Custom React/Next.js API) to this URL via `HTTP POST`.
+
+ ---
+
+## 💼 Need Custom AI & Workflow Automation?
+
+I build bespoke, enterprise-grade AI agents, CRM pipelines, and backend automations for fast-growing businesses.
+* **Email:** automate.biau@gmail.com
