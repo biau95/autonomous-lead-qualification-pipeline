@@ -112,10 +112,10 @@ Output ONLY raw JSON format matching this schema:
 
 ### User Prompt Input
 ```text
-Name: {{1.name}}
-Email: {{1.email}}
-Website: {{1.website}}
-Message: {{1.message}}
+Name: {{2.name}}
+Email: {{2.email}}
+Website: {{2.website}}
+Message: {{2.message}}
 ```
 
 ---
