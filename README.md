@@ -80,7 +80,7 @@ This system ingests inbound leads in real time via secure webhooks, validates in
 | Component | Technology | Role |
 | :--- | :--- | :--- |
 | **Orchestration** | [Make.com](https://www.make.com/) | Webhook ingestion, JSON parsing, routing, error handlers |
-| **Intelligence** | [OpenAI API](https://platform.openai.com/) (GPT-4o) | Firmographic extraction, intent scoring, sales brief generation |
+| **Intelligence** | [OpenAI API](https://platform.openai.com/) | Firmographic extraction, intent scoring, sales brief generation |
 | **CRM / Data Layer**| [Airtable](https://airtable.com/) | Real-time state management, lead profiling |
 | **Team Alerts** | [Slack API](https://slack.com/) | Formatted markdown alerts to dedicated `#hot-leads` channel |
 
