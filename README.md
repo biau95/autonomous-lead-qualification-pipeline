@@ -10,7 +10,7 @@ This system ingests inbound leads in real time via secure webhooks, validates in
 
 | Make.com Workflow Pipeline | Real-Time Slack Bot Notification |
 | :---: | :---: |
-| ![Workflow](workflow.png) | ![Slack Alert](slack-alert.png) |
+| ![Workflow](make_workflow.png) | ![Slack Alert](slack_alert.png) |
 
 ---
 
