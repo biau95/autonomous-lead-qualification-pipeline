@@ -53,7 +53,7 @@ This system ingests inbound leads in real time via secure webhooks, validates in
 
 ## 🛡️ Enterprise Resilience & Fault Tolerance
 
-** 1.Payload Guard Filter:**
+* **1.Payload Guard Filter:**
   * Validates incoming email format via Regex (`^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$`) and checks payload integrity before triggering AI modules, eliminating spam and bot executions.
 
 * **Strict JSON Schema Enforcement:**
